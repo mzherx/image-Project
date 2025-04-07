@@ -1,9 +1,10 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { assets, plans } from '../assets/assets';
 import { AppContext } from '../context/AppContext';
 import { motion } from 'framer-motion';
 import { loadStripe } from '@stripe/stripe-js';
 import { toast } from 'react-toastify';
+import { premiumToast } from '../toast';
 
 const stripePromise = loadStripe('paste your stripe key');
 
@@ -11,110 +12,132 @@ const BuyCredit = () => {
   const { user, backendUrl, loadCreditsData, token } = useContext(AppContext);
 
   const handlePurchase = async (planId) => {
+    if (!user) {
+      premiumToast.info('Please login to purchase credits');
+      return;
+    }
+
     try {
       const stripe = await stripePromise;
-
-      // Retrieve userId from local storage
       const userId = localStorage.getItem('userId');
+      
       if (!userId) {
         throw new Error('User ID is missing');
       }
 
-      // Create a checkout session
       const response = await fetch(`${backendUrl}/api/stripe/create-checkout-session`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ planId, userId }), // Include both planId and userId
+        body: JSON.stringify({ planId, userId }),
       });
 
       const session = await response.json();
 
       if (response.ok && session.url) {
-        // Redirect to the Stripe Checkout session
-        handlePostPayment(planId,userId);
         window.location.href = session.url;
       } else {
-        throw new Error(session.message || 'Failed to create checkout session.');
+        throw new Error(session.message || 'Failed to create checkout session');
       }
     } catch (error) {
-      console.error(error.message);
-      toast.error(error.message || 'An error occurred while processing the payment.');
+      console.error('Payment error:', error);
+      premiumToast.error(error.message || 'Payment processing failed');
     }
   };
-
-  const handlePostPayment = async (planId,userId) => {
-
-    if (planId && userId) {
-      try {
-        // Confirm payment and update credits
-        const response = await fetch(`${backendUrl}/api/stripe/confirm-payment`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ planId, userId }),
-        });
-
-        const result = await response.json();
-
-        if (response.ok) {
-          toast.success('Credits updated successfully!');
-          console.log('Payment confirmed:', result);
-
-          // Optionally reload credits data after successful payment
-          if (loadCreditsData) loadCreditsData();
-        } else {
-          throw new Error(result.message || 'Failed to confirm payment.');
-        }
-      } catch (error) {
-        console.error('Error confirming payment:', error.message);
-        toast.error(error.message || 'An error occurred while confirming the payment.');
-      }
-    }
-  };
-
-  // Check for post-payment success only when the URL has the `success=true` parameter
-  // useEffect(() => {
-  //   const urlParams = new URLSearchParams(window.location.search);
-  //   if (urlParams.get('success') === 'true') {
-  //     handlePostPayment();
-  //   }
-  // }, []);
 
   return (
     <motion.div
-      initial={{ opacity: 0.2, y: 100 }}
-      transition={{ duration: 1 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      className="min-h-[80vh] text-center pt-14 mb-10"
+      initial={{ opacity: 0, y: 50 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8 }}
+      className="min-h-screen py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-blue-50 to-white rounded-2xl sm:mt-6"
     >
-      <button className="border border-gray-400 px-10 py-2 rounded-full mb-6">Our Plans</button>
-      <h1 className="text-center text-3xl font-medium mb-6 sm:mb-10">Choose the plan</h1>
-
-      <div className="flex flex-wrap justify-center gap-6 text-left">
-        {plans.map((item, index) => (
-          <div
-            key={index}
-            className="bg-white drop-shadow-sm border rounded-lg py-12 px-8 text-gray-600 hover:scale-105 transition-all duration-500"
+      <div className="max-w-7xl mx-auto">
+        <div className="text-center mb-16">
+          <motion.span 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="inline-block px-6 py-2 text-sm font-medium text-blue-600 bg-blue-100 rounded-full shadow-sm"
           >
-            <img width={40} src={assets.logo_icon} alt="" />
-            <p className="mt-3 mb-1 font-semibold">{item.id}</p>
-            <p className="text-sm">{item.desc}</p>
-            <p className="mt-6">
-              <span className="text-3xl font-medium">${item.price}</span> / {item.credits} credits
-            </p>
+            Pricing Plans
+          </motion.span>
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="mt-4 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl"
+          >
+            Choose Your Perfect Plan
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+            className="mt-6 text-lg leading-8 text-gray-600 max-w-2xl mx-auto"
+          >
+            Get more credits and create stunning AI-generated images with our flexible pricing options
+          </motion.p>
+        </div>
 
-            <button
-              onClick={() => handlePurchase(item.id)}
-              className="w-full bg-gray-800 text-white mt-8 text-sm rounded-md py-2.5 min-w-52"
+        <div className="grid gap-8 lg:grid-cols-3 md:grid-cols-2">
+          {plans.map((plan, index) => (
+            <motion.div
+              key={plan.id}
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 + index * 0.1 }}
+              whileHover={{ y: -10 }}
+              className="flex flex-col overflow-hidden rounded-2xl bg-white shadow-xl border border-gray-200 hover:shadow-2xl transition-all duration-300"
             >
-              {user ? 'Purchase' : 'Get Started'}
-            </button>
-          </div>
-        ))}
+              <div className="p-8 sm:p-10">
+                <h3 className="text-2xl font-bold tracking-tight text-gray-900">
+                  {plan.id}
+                </h3>
+                <p className="mt-4 text-base text-gray-500">
+                  {plan.desc}
+                </p>
+                <div className="mt-8 flex items-baseline gap-x-2">
+                  <span className="text-5xl font-bold tracking-tight text-gray-900">
+                    ${plan.price}
+                  </span>
+                  <span className="text-lg font-semibold leading-6 text-gray-600">
+                    / {plan.credits} credits
+                  </span>
+                </div>
+                <div className="mt-8">
+                  <motion.button
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => handlePurchase(plan.id)}
+                    className="w-full rounded-lg bg-blue-600 px-6 py-3 text-lg font-semibold text-white shadow-sm hover:bg-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+                  >
+                    {user ? 'Get Started' : 'Sign Up to Purchase'}
+                  </motion.button>
+                </div>
+              </div>
+              <div className="bg-gray-50 p-4 sm:p-6 text-center">
+                <p className="text-sm text-gray-500">
+                  {plan.credits} AI image generations
+                </p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+
+        <div className="mt-16 text-center">
+          <motion.p
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+            viewport={{ once: true }}
+            className="text-gray-500"
+          >
+            Need a custom plan? <a href="#" className="font-medium text-blue-600 hover:text-blue-500">Contact us</a>
+          </motion.p>
+        </div>
       </div>
     </motion.div>
   );
