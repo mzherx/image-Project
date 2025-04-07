@@ -1,56 +1,86 @@
 import React, { useContext } from "react";
-import { assets } from "../assets/assets";
 import { motion } from "framer-motion";
 import { AppContext } from "../context/AppContext";
 import { useNavigate } from "react-router-dom";
+
 const GenerateBtn = () => {
   const { user, setShowLogin } = useContext(AppContext);
   const navigate = useNavigate();
-  const onClickHandler = () => {
+
+  const handleGenerateClick = () => {
     if (user) {
-      navigate("/result");
+      navigate("/generate");
     } else {
       setShowLogin(true);
     }
   };
+
+  const handleExamplesClick = () => {
+    navigate("/buy");
+  };
+
   return (
-    <motion.div
-      initial={{ opacity: 0.2, y: 100 }}
-      transition={{ duration: 1 }}
+    <motion.section
+      initial={{ opacity: 0, y: 50 }}
       whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8 }}
       viewport={{ once: true }}
+      className="relative w-full px-5 py-16 md:py-[150px] bg-gradient-to-br f"
     >
-      <section>
-        <div class="relative items-center w-full px-5 py-12 mx-auto md:px-12 lg:px-16 max-w-7xl lg:py-24 bg-white">
-          <div class="flex w-full mx-auto text-left">
-            <div class="relative inline-flex items-center mx-auto align-middle">
-              <div class="text-center">
-                <h1 class="max-w-5xl text-2xl font-bold leading-none tracking-tighter text-neutral-600 md:text-5xl lg:text-6xl lg:max-w-7xl">
-                  Long headline to turn <br class="hidden lg:block" />
-                  your visitors into users
-                </h1>
-                <p class="max-w-xl mx-auto mt-8 text-base leading-relaxed text-gray-500">
-                  Free and Premium themes, UI Kit's, templates and landing pages
-                  built with Tailwind CSS, HTML &amp; Next.js.
-                </p>
-                <div class="flex justify-center w-full max-w-2xl gap-2 mx-auto mt-6">
-                  <div class="mt-3 rounded-lg sm:mt-0">
-                    <button class="px-5 py-4 text-base font-medium text-center text-white transition duration-500 ease-in-out transform bg-blue-600 lg:px-10 rounded-xl hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                      Get bundle
-                    </button>
-                  </div>
-                  <div class="mt-3 rounded-lg sm:mt-0 sm:ml-3">
-                    <button class="items-center block px-5 lg:px-10 py-3.5 text-base font-medium text-center text-blue-600 transition duration-500 ease-in-out transform border-2 border-white shadow-md rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-                      See features
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
+      <div className="mx-auto max-w-7xl px-5 md:px-12 lg:px-16">
+        <div className="flex w-full mx-auto text-center">
+          <div className="mx-auto max-w-4xl">
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              viewport={{ once: true }}
+              className="text-4xl font-bold leading-tight text-gray-900 md:text-5xl lg:text-6xl"
+            >
+              Turn Your Imagination <br className="hidden lg:block" />
+              Into Stunning Visuals
+            </motion.h1>
+            
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              viewport={{ once: true }}
+              className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-gray-600"
+            >
+              Create breathtaking AI-generated images with just words. Our platform transforms 
+              your text prompts into unique, high-quality visuals in seconds - no design skills needed!
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              viewport={{ once: true }}
+              className="mt-10 flex flex-col sm:flex-row justify-center gap-4"
+            >
+              <motion.button
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={handleGenerateClick}
+                className="px-8 py-4 text-lg font-medium text-white bg-blue-600 rounded-xl hover:bg-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl"
+              >
+                Generate Your First Image
+              </motion.button>
+              
+              <motion.button
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={handleExamplesClick}
+                className="px-8 py-4 text-lg font-medium text-blue-600 bg-white border border-blue-200 rounded-xl hover:bg-blue-50 transition-all duration-300 shadow-md hover:shadow-lg"
+              >
+                See Pricing
+              </motion.button>
+            </motion.div>
           </div>
         </div>
-      </section>
-    </motion.div>
+      </div>
+    </motion.section>
   );
 };
 
