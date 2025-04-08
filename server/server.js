@@ -8,27 +8,11 @@ import Stripe from 'stripe';
 import userModel from './models/userModel.js';
 
 const PORT = process.env.PORT || 4000;
-const stripe = new Stripe('sk_test_51PaePxCaWz00BLNqJ2TR9WvHtSDqoISg5g7spDLRPTdMmgnjXSLX9HMBhSUPkfOeyOxOMSvwKLtEuiX8w24Lb3hP009xWRc1wu');  // Secret key directly in the code
+const stripe = new Stripe('sk_test_51PaePxCaWz00BLNqJ2TR9WvHtSDqoISg5g7spDLRPTdMmgnjXSLX9HMBhSUPkfOeyOxOMSvwKLtEuiX8w24Lb3hP009xWRc1wu'); // Use secret key from environment
 const app = express();
 
-const allowedOrigins = ['https://imagify-ai-vercel.vercel.app', 'http://localhost:5173'];
-
-// CORS configuration
-app.use(cors({
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true); // Allow the request
-      } else {
-        console.error(`Blocked by CORS: ${origin}`);
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true, // Allow cookies and credentials
-  }));
-
 app.use(express.json());
+app.use(cors());
 connectedDB();
 
 app.use('/api/user', userRouter);
@@ -69,14 +53,14 @@ app.post('/api/stripe/create-checkout-session', async (req, res) => {
                 },
             ],
             mode: 'payment',
-            success_url: `http://localhost:5173/`,  // Success URL for local development
-            cancel_url: `http://localhost:5173/cancel`,  // Cancel URL for local development
+            success_url: `http://localhost:5173/`,
+            cancel_url: `http://localhost:5173/cancel`,
         });
 
         res.status(200).json({ 
             success: true, 
             url: session.url,
-            userId,  // Include userId in the response
+            userId, // Include userId in the response
             planName: plan.id // Include the plan name in the response
         });
     } catch (error) {
@@ -85,7 +69,7 @@ app.post('/api/stripe/create-checkout-session', async (req, res) => {
     }
 });
 
-// Confirm payment
+
 app.post('/api/stripe/confirm-payment', async (req, res) => {
     try {
         const { planId, userId } = req.body;
@@ -126,6 +110,7 @@ app.post('/api/stripe/confirm-payment', async (req, res) => {
         res.status(500).json({ success: false, message: 'Internal server error' });
     }
 });
+
 
 app.get('/', (req, res) => res.send('API working'));
 app.listen(PORT, () => console.log('Server running on port ' + PORT));
