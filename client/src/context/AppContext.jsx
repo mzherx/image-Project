@@ -16,6 +16,7 @@ const AppContextProvider = (props) => {
   // Will be just '/api'
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
+
   const loadCreditsData = async () => {
     try {
       const { data } = await axios.get(`${backendUrl}/user/credits`, {
