@@ -12,7 +12,11 @@ const stripe = new Stripe('sk_test_51PaePxCaWz00BLNqJ2TR9WvHtSDqoISg5g7spDLRPTdM
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: ['http://localhost:5173', 'https://imagify-frontend.vercel.app'], // Add your frontend URLs here
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
+    credentials: true // If you need to send cookies or authentication headers
+}));
 connectedDB();
 
 app.use('/api/user', userRouter);
