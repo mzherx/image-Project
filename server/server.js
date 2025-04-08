@@ -11,13 +11,19 @@ const PORT = process.env.PORT || 4000;
 const stripe = new Stripe('sk_test_51PaePxCaWz00BLNqJ2TR9WvHtSDqoISg5g7spDLRPTdMmgnjXSLX9HMBhSUPkfOeyOxOMSvwKLtEuiX8w24Lb3hP009xWRc1wu'); // Use secret key from environment
 const app = express();
 
+
 app.use(express.json());
 app.use(cors({
     origin: ['http://localhost:5173', 'https://imagify-frontend.vercel.app'], // Add your frontend URLs here
-    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
-    credentials: true // If you need to send cookies or authentication headers
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Include OPTIONS for preflight requests
+    allowedHeaders: ['Content-Type', 'Authorization', 'token'], // Add 'token' to allowed headers
+    credentials: true // Allow cookies and credentials
 }));
 connectedDB();
+
+
+// Handle preflight requests
+app.options('*', cors()); // Allow preflight requests for all routes
 
 app.use('/api/user', userRouter);
 app.use('/api/image', imageRouter);
