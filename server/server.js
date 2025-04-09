@@ -20,6 +20,7 @@ app.use(cors({
     credentials: true
 }));
 connectedDB();
+app.use(cors(corsOptions));
 
 
 // Handle preflight requests
