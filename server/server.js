@@ -14,10 +14,10 @@ const app = express();
 
 app.use(express.json());
 app.use(cors({
-    origin: ['http://localhost:5173', 'https://imagify-frontend.vercel.app'], // Add your frontend URLs here
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Include OPTIONS for preflight requests
-    allowedHeaders: ['Content-Type', 'Authorization', 'token'], // Add 'token' to allowed headers
-    credentials: true // Allow cookies and credentials
+    origin: ['http://localhost:5173', 'https://imagify-frontend.vercel.app'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'token'], // Include your custom headers
+    credentials: true
 }));
 connectedDB();
 
