@@ -14,7 +14,7 @@ const app = express();
 
 app.use(express.json());
 app.use(cors({
-    origin: ['http://localhost:5173', 'https://imagify-frontend.vercel.app'],
+    origin: ['http://localhost:5173', 'https://imagify-ai-flame.vercel.app'],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'token'], // Include your custom headers
     credentials: true
