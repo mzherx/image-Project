@@ -11,10 +11,18 @@ const PORT = process.env.PORT || 4000;
 const stripe = new Stripe('sk_test_51PaePxCaWz00BLNqJ2TR9WvHtSDqoISg5g7spDLRPTdMmgnjXSLX9HMBhSUPkfOeyOxOMSvwKLtEuiX8w24Lb3hP009xWRc1wu'); // Use secret key from environment
 const app = express();
 
-app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "https://imagify-ai-flame.vercel.app");
+const allowedOrigins = [
+    'http://localhost:5173',
+    'https://imagify-ai-flame.vercel.app'
+  ];
+
+  app.use((req, res, next) => {
+    const origin = req.headers.origin;
+    if (allowedOrigins.includes(origin)) {
+      res.header("Access-Control-Allow-Origin", origin);
+    }
     res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, token");
   
     if (req.method === 'OPTIONS') {
       return res.sendStatus(200);
