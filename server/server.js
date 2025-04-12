@@ -5,7 +5,7 @@ import connectedDB from './config/db.js';
 import userRouter from './routes/userRoutes.js';
 import imageRouter from './routes/imageRoutes.js';
 import userModel from './models/userModel.js';
-import { corsMiddleware } from './middleware/cors.js';
+import cors from 'cors';
 
 // Load environment variables
 dotenv.config();
@@ -17,7 +17,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_51PaePxCaWz0
 const app = express();
 
 app.use(express.json());
-app.use(corsMiddleware);
+app.use(cors());
 
 await connectedDB();
 
