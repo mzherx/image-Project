@@ -18,10 +18,10 @@ const app = express();
 
 app.use(express.json());
 app.use(cors({
-  origin: ['https://image-project-client.vercel.app', 'http://localhost:5173'],
+  origin: 'https://image-project-client.vercel.app',
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'token']
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['X-CSRF-Token', 'X-Requested-With', 'Accept', 'Accept-Version', 'Content-Length', 'Content-MD5', 'Content-Type', 'Date', 'X-Api-Version', 'Authorization', 'token']
 }));
 await connectedDB();
 
