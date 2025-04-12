@@ -1,14 +1,17 @@
 import express from 'express';
 import cors from 'cors';
-import 'dotenv/config';
-import connectedDB from './config/db.js';
+import dotenv from 'dotenv';
+import Stripe from 'stripe';
+import { connectedDB } from './config/db.js';
 import userRouter from './routes/userRoutes.js';
 import imageRouter from './routes/imageRoutes.js';
-import Stripe from 'stripe';
 import userModel from './models/userModel.js';
 
+// Load environment variables
+dotenv.config();
+
 const PORT = process.env.PORT || 4000;
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_51PaePxCaWz00BLNqJ2TR9WvHtSDqoISg5g7spDLRPTdMmgnjXSLX9HMBhSUPkfOeyOxOMSvwKLtEuiX8w24Lb3hP009xWRc1wu', {
   apiVersion: '2023-10-16'
 });
 const app = express();
