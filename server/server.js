@@ -53,8 +53,8 @@ app.post('/api/stripe/create-checkout-session', async (req, res) => {
                 },
             ],
             mode: 'payment',
-            success_url: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/`,
-            cancel_url: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/cancel`,
+            success_url: `http://localhost:5173/`,
+            cancel_url: `http://localhost:5173/cancel`,
         });
 
         res.status(200).json({ 
