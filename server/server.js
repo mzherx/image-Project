@@ -7,13 +7,14 @@ import userRouter from './routes/userRoutes.js';
 import imageRouter from './routes/imageRoutes.js';
 import userModel from './models/userModel.js';
 
-// Load environment variables
+// Load environment variables first
 dotenv.config();
 
 const PORT = process.env.PORT || 4000;
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_51PaePxCaWz00BLNqJ2TR9WvHtSDqoISg5g7spDLRPTdMmgnjXSLX9HMBhSUPkfOeyOxOMSvwKLtEuiX8w24Lb3hP009xWRc1wu', {
   apiVersion: '2023-10-16'
 });
+
 const app = express();
 
 app.use(express.json());
@@ -23,6 +24,8 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'token']
 }));
+
+// Connect to database
 connectedDB();
 
 app.use('/api/user', userRouter);
