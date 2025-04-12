@@ -1,11 +1,11 @@
 import express from 'express';
-import cors from 'cors';
 import dotenv from 'dotenv';
 import Stripe from 'stripe';
 import connectedDB from './config/db.js';
 import userRouter from './routes/userRoutes.js';
 import imageRouter from './routes/imageRoutes.js';
 import userModel from './models/userModel.js';
+import { corsMiddleware } from './middleware/cors.js';
 
 // Load environment variables
 dotenv.config();
@@ -17,12 +17,8 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_51PaePxCaWz0
 const app = express();
 
 app.use(express.json());
-app.use(cors({
-  origin: 'https://image-project-client.vercel.app',
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['X-CSRF-Token', 'X-Requested-With', 'Accept', 'Accept-Version', 'Content-Length', 'Content-MD5', 'Content-Type', 'Date', 'X-Api-Version', 'Authorization', 'token']
-}));
+app.use(corsMiddleware);
+
 await connectedDB();
 
 app.use('/api/user', userRouter);
