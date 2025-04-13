@@ -17,7 +17,10 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_51PaePxCaWz0
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: ['https://imagify-project-server.vercel.app', 'http://localhost:5173'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+}));
 
 await connectedDB();
 
